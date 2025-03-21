@@ -1,0 +1,97 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum EmployeeRole {
+  STAFF //Colaborador comum
+  MANAGER //Gestor dos departamentos
+  ADMIN //Administrador da empresa
+  MASTER //Administrador geral
+}
+
+//Departamentos da empresa
+enum CompanyDepartment {
+  IT
+  HR
+  MARKETING
+  CONTABILITY
+  LEGAL
+}
+
+//Status da tarefa
+enum TaskStatus {
+  PENDING
+  //Quando considerado finalizado pelo STAFF, será um PARTIAL_DONE (PRECISARÁ DA APROVAÇÃO DO MANAGER RELACIONADO)
+  PARTIAL_DONE 
+  DONE
+  //Quando considerado cancelado pelo STAFF, será um PARTIAL_DONE (PRECISARÁ DA APROVAÇÃO DO MANAGER RELACIONADO)
+  PARTIAL_CANCELLED 
+  CANCELLED
+}
+
+//Tabela de empregados
+model Employee {
+  id String @id @default(uuid())
+  name String
+  email String @unique
+  password String
+  role EmployeeRole //Importante para controle de acesso
+  department CompanyDepartment
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  //Relação de empresa vinculada ao funcionário
+  companyId String
+  company Company @relation(fields: [companyId], references: [id])
+
+  //Relação de tarefas a serem feitas/finalizadas por este EMPLOYEE (em caso de seu ROLE ser STAFF)
+  Tasks Task[] @relation("staffRelation")
+
+  //Relação de tarefas ordenadas por este EMPLOYEE (em caso de seu ROLE ser MANAGER)
+  OrderedTasks Task[] @relation("managerRelation")
+
+  @@map("employees")
+}
+
+model Company {
+  id String @id @default(uuid())
+  cnpj String @unique
+  name String
+  email String @unique
+  departments String @default("CONTABILITY, IT, HR, MARKETING, LEGAL")
+
+  //Relação de funcionários vinculados à empresa
+  employees Employee[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("companies")
+}
+
+model Task {
+  id String @id @default(uuid())
+  title String
+  category String
+  startDate DateTime
+  endDate DateTime
+  status TaskStatus @default(PENDING)
+
+
+  //Referência ao STAFF vinculado a tarefa
+  staffId String
+  staff Employee @relation("staffRelation", fields: [staffId], references: [id]) 
+
+  //Referência ao MANAGER vinculado a tarefa
+  managerId String
+  manager Employee @relation("managerRelation", fields: [managerId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

@@ -12,7 +12,9 @@
     "typescript": "^5.8.2"
   },
   "dependencies": {
-    "express": "^4.21.2"
+    "@prisma/client": "^6.5.0",
+    "express": "^4.21.2",
+    "prisma": "^6.5.0"
   },
   "keywords": [],
   "author": "",

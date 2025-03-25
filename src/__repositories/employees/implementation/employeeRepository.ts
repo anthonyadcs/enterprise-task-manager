@@ -11,6 +11,15 @@ export class EmployeeRepository implements IEmployeeRepository {
 
 		return employee;
 	}
+
+	async getById(id: string): Promise<Employee | undefined> {
+		const employee =
+			(await prismaClient.employee.findUnique({
+				where: { id },
+			})) || undefined;
+
+		return employee;
+	}
 }
 
 export const employeeRepository = new EmployeeRepository();

@@ -30,9 +30,9 @@ export async function authenticationMiddleware(
 		);
 	}
 
-	request.employee = {
-		id,
-	};
+	const { password: _, ...formattedEmployee } = employee;
+
+	request.employee = formattedEmployee;
 
 	next();
 }

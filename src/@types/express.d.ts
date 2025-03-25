@@ -1,9 +1,9 @@
+import { Employee } from "@prisma/client";
+
 declare global {
 	namespace Express {
 		export interface Request {
-			employee: {
-				id: string;
-			};
+			employee: Omit<Employee, "password">;
 		}
 	}
 }

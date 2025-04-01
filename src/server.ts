@@ -11,4 +11,6 @@ app.use("/api", employeeRoutes);
 app.use("/api", companyRoutes);
 
 app.use(errorMiddleware);
-app.listen(process.env.PORT, async () => console.log(`Listening on port ${process.env.PORT}`));
+app.listen(process.env.PORT, async () => {
+	console.log(`Listening on port ${process.env.PORT}`);
+});

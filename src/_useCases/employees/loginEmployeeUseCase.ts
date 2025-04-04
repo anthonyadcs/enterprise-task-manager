@@ -2,6 +2,7 @@ import { UnauthorizedError } from "@errors/apiError";
 import { IEmployeeRepository } from "__repositories/employees/employeeRepositoryInterface";
 import { employeeRepository } from "__repositories/employees/implementation/employeeRepository";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 
 interface LoginEmployeeUseCaseRequest {
 	email: string;
@@ -24,7 +25,7 @@ export class LoginEmployeeUseCase {
 	}: LoginEmployeeUseCaseRequest): Promise<LoginEmployeeUseCaseResponse> {
 		const employee = await this.employeeRepository.getByEmail(email);
 
-		if (!employee || employee.password !== password) {
+		if (!(employee && (await bcrypt.compare(password, employee.password)))) {
 			throw new UnauthorizedError("Acesso negado: e-mail e/ou senha incorreto(s).");
 		}
 

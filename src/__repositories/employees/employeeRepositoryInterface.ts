@@ -1,6 +1,6 @@
 import { Employee } from "@prisma/client";
 import { CreateEmployeeDTO } from "./dto/createEmployeeDTO";
-import { UpdateEmployeePersonalDataDTO } from "./dto/updateEmployeePersonalDataDTO";
+import { UpdateEmployeeDTO } from "./dto/updateEmployeeDTO";
 
 export interface IEmployeeRepository {
 	create({
@@ -9,7 +9,7 @@ export interface IEmployeeRepository {
 		password,
 		company: { id, department, role },
 	}: CreateEmployeeDTO): Promise<void>;
-	updatePersonalData({ name, email, password }: UpdateEmployeePersonalDataDTO): Promise<void>;
+	update({ name, email, password, department, role }: UpdateEmployeeDTO): Promise<void>;
 	getByEmail(email: string): Promise<Employee | undefined>;
 	getById(id: string): Promise<Employee | undefined>;
 }

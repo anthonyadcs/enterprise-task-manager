@@ -2,7 +2,7 @@ import { Employee } from "@prisma/client";
 import { IEmployeeRepository } from "../employeeRepositoryInterface";
 import { prismaClient } from "dbConnection/prismaClient";
 import { CreateEmployeeDTO } from "../dto/createEmployeeDTO";
-import { UpdateEmployeePersonalDataDTO } from "../dto/updateEmployeePersonalDataDTO";
+import { UpdateEmployeeDTO } from "../dto/updateEmployeeDTO";
 
 export class EmployeeRepository implements IEmployeeRepository {
 	async create({
@@ -32,12 +32,7 @@ export class EmployeeRepository implements IEmployeeRepository {
 		}
 	}
 
-	async updatePersonalData({
-		id,
-		name,
-		email,
-		password,
-	}: UpdateEmployeePersonalDataDTO): Promise<void> {
+	async update({ id, name, email, password, department, role }: UpdateEmployeeDTO): Promise<void> {
 		try {
 			await prismaClient.employee.update({
 				where: { id },
@@ -45,6 +40,8 @@ export class EmployeeRepository implements IEmployeeRepository {
 					name,
 					email,
 					password,
+					role,
+					department,
 				},
 			});
 		} catch (error) {

@@ -1,5 +1,6 @@
 import { createEmployeeController } from "@controllers/employees/createEmployeeController";
 import { getEmployeeController } from "@controllers/employees/getEmployeeController";
+import { updateEmployeeController } from "@controllers/employees/updateEmployeeController";
 import { loginEmployeeController } from "controllers/employees/loginEmployeeController";
 import { Request, Response, Router } from "express";
 import { authenticationMiddleware } from "middlewares/authentication";
@@ -16,6 +17,10 @@ const protectedRoutes = Router();
 
 protectedRoutes.post("/employees", async (request: Request, response: Response) => {
 	await createEmployeeController.handle(request, response);
+});
+
+protectedRoutes.patch("/employees/:id", async (request: Request, response: Response) => {
+	await updateEmployeeController.handle(request, response);
 });
 
 protectedRoutes.get("/auth/me/:id", async (request: Request, response: Response) => {

@@ -50,6 +50,17 @@ export class EmployeeRepository implements IEmployeeRepository {
 		}
 	}
 
+	async delete(id: string): Promise<void> {
+		try {
+			await prismaClient.employee.delete({
+				where: { id },
+			});
+		} catch (error) {
+			console.log(error);
+			throw new Error();
+		}
+	}
+
 	async getByEmail(email: string): Promise<Employee | undefined> {
 		try {
 			const employee =

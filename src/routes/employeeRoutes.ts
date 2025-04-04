@@ -1,4 +1,5 @@
 import { createEmployeeController } from "@controllers/employees/createEmployeeController";
+import { deleteEmployeeController } from "@controllers/employees/deleteEmployeeController";
 import { getEmployeeController } from "@controllers/employees/getEmployeeController";
 import { updateEmployeeController } from "@controllers/employees/updateEmployeeController";
 import { loginEmployeeController } from "controllers/employees/loginEmployeeController";
@@ -21,6 +22,10 @@ protectedRoutes.post("/employees", async (request: Request, response: Response) 
 
 protectedRoutes.patch("/employees/:id", async (request: Request, response: Response) => {
 	await updateEmployeeController.handle(request, response);
+});
+
+protectedRoutes.delete("/employees/:id", async (request: Request, response: Response) => {
+	await deleteEmployeeController.handle(request, response);
 });
 
 protectedRoutes.get("/auth/me/:id", async (request: Request, response: Response) => {

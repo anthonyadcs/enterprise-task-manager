@@ -10,6 +10,7 @@ export interface IEmployeeRepository {
 		company: { id, department, role },
 	}: CreateEmployeeDTO): Promise<void>;
 	update({ name, email, password, department, role }: UpdateEmployeeDTO): Promise<void>;
+	delete(id: string): Promise<void>;
 	getByEmail(email: string): Promise<Employee | undefined>;
 	getById(id: string): Promise<Employee | undefined>;
 }

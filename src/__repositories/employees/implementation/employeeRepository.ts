@@ -1,8 +1,9 @@
 import { Employee } from "@prisma/client";
-import { IEmployeeRepository } from "../employeeRepositoryInterface";
+import { GetCompanyEmployeesResponse, IEmployeeRepository } from "../employeeRepositoryInterface";
 import { prismaClient } from "dbConnection/prismaClient";
 import { CreateEmployeeDTO } from "../dto/createEmployeeDTO";
 import { UpdateEmployeeDTO } from "../dto/updateEmployeeDTO";
+import { GetCompanyEmployeesDTO } from "../dto/getCompanyEmployeesDTO";
 
 export class EmployeeRepository implements IEmployeeRepository {
 	async create({
@@ -55,6 +56,56 @@ export class EmployeeRepository implements IEmployeeRepository {
 			await prismaClient.employee.delete({
 				where: { id },
 			});
+		} catch (error) {
+			console.log(error);
+			throw new Error();
+		}
+	}
+
+	async getEmployees({
+		companyId,
+		queries: { filters, order, page },
+	}: GetCompanyEmployeesDTO): Promise<GetCompanyEmployeesResponse> {
+		try {
+			const [employees, employeesInThisPage, totalEmployees] = [
+				(await prismaClient.employee.findMany({
+					where: {
+						companyId,
+						AND: filters,
+					},
+					skip: page.skip,
+					take: page.limit,
+					orderBy: {
+						[order.field]: order.sort,
+					},
+					include: {
+						Tasks: true,
+					},
+				})) || undefined,
+				await prismaClient.employee.count({
+					where: {
+						companyId,
+						AND: filters,
+					},
+					skip: page.skip,
+					take: page.limit,
+				}),
+				await prismaClient.employee.count({
+					where: {
+						companyId,
+						AND: filters,
+					},
+				}),
+			];
+
+			const totalPages = Math.ceil(totalEmployees / page.limit);
+
+			return {
+				employees,
+				employeesInThisPage,
+				totalEmployees,
+				totalPages,
+			};
 		} catch (error) {
 			console.log(error);
 			throw new Error();

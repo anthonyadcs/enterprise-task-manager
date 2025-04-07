@@ -29,7 +29,9 @@ class ValidateParams {
 
 	async parse(schema: ZodSchema, params: any) {
 		try {
-			return schema.parse(params);
+			const result = await schema.parse(params);
+
+			return result;
 		} catch (error: any) {
 			let message = "Dados de requisição mal formatados";
 			const errors = error.errors;

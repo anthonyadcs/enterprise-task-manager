@@ -31,6 +31,5 @@ protectedRoutes.delete("/employees/:id", async (request: Request, response: Resp
 protectedRoutes.get("/auth/me/:id", async (request: Request, response: Response) => {
 	await getEmployeeController.handle(request, response);
 });
-
 employeeRoutes.use(publicRoutes);
 employeeRoutes.use(authenticationMiddleware, protectedRoutes);

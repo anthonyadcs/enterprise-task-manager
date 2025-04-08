@@ -79,7 +79,7 @@ export class EmployeeRepository implements IEmployeeRepository {
 						[order.field]: order.sort,
 					},
 					include: {
-						Tasks: true,
+						tasks: true,
 					},
 				})) || undefined,
 				await prismaClient.employee.count({

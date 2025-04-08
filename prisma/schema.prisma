@@ -34,6 +34,13 @@ enum TaskStatus {
   CANCELLED
 }
 
+enum TaskPriority {
+  CRITICAL //Tarefa que interrompe tudo: Ex: sistema fora do ar
+  HIGH // Tarefa de alta urgência. Que bloqueia um ou mais setores do projeto
+  MEDIUM // Importante, mas podem esperar
+  LOW // Tarefa opcional/melhoria contínua
+}
+
 //Tabela de empregados
 model Employee {
   id String @id @default(uuid())
@@ -51,10 +58,10 @@ model Employee {
   company Company @relation(fields: [companyId], references: [id])
 
   //Relação de tarefas a serem feitas/finalizadas por este EMPLOYEE (em caso de seu ROLE ser STAFF)
-  Tasks Task[] @relation("staffRelation")
+  tasks Task[] @relation("staffRelation")
 
   //Relação de tarefas ordenadas por este EMPLOYEE (em caso de seu ROLE ser MANAGER)
-  OrderedTasks Task[] @relation("managerRelation")
+  orderedTasks Task[] @relation("managerRelation")
 
   @@map("employees")
 }
@@ -81,7 +88,8 @@ model Company {
 model Task {
   id String @id @default(uuid())
   title String
-  category String
+  priority TaskPriority
+  department CompanyDepartment
   startDate DateTime
   endDate DateTime
   status TaskStatus @default(PENDING)

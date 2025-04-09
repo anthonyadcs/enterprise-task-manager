@@ -4,6 +4,7 @@ import { Router } from "express";
 import { authenticationMiddleware } from "middlewares/authentication";
 import { updateCompanyController } from "@controllers/companies/updateCompanyController";
 import { getCompanyEmployeesController } from "@controllers/employees/getCompanyEmployeesController";
+import { getCompanyTasksController } from "@controllers/companies/getCompanyTasksController";
 
 export const companyRoutes = Router();
 
@@ -23,5 +24,9 @@ protectedRoutes.get(
 		await getCompanyEmployeesController.handle(request, response);
 	},
 );
+
+protectedRoutes.get("/companies/:id/tasks", async (request: Request, response: Response) => {
+	await getCompanyTasksController.handle(request, response);
+});
 
 companyRoutes.use(authenticationMiddleware, protectedRoutes);

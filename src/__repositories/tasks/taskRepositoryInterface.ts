@@ -3,6 +3,8 @@ import { GetEmployeeTasksDTO } from "./dtos/GetEmployeTasksDTO";
 import { GetCompanyTasksDTO } from "./dtos/GetCompanyTasksDTO";
 
 export interface ITaskRepository {
+	getById(id: string): Promise<Task | undefined>;
+
 	getByEmployeeId({
 		employeeId,
 		queries: { filters, order, page },

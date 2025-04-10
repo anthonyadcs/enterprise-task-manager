@@ -2,8 +2,23 @@ import { prismaClient } from "dbConnection/prismaClient";
 import { GetEmployeeTasksDTO } from "../dtos/GetEmployeTasksDTO";
 import { GetTasksResponse, ITaskRepository } from "../taskRepositoryInterface";
 import { GetCompanyTasksDTO } from "../dtos/GetCompanyTasksDTO";
+import { Task } from "@prisma/client";
 
 class TaskRepository implements ITaskRepository {
+	async getById(id: string): Promise<Task | undefined> {
+		try {
+			const task =
+				(await prismaClient.task.findUnique({
+					where: { id },
+				})) || undefined;
+
+			return task;
+		} catch (error) {
+			console.log(error);
+			throw new Error();
+		}
+	}
+
 	async getByEmployeeId({
 		employeeId,
 		queries: { filters, order, page },

@@ -37,7 +37,7 @@ export class GetTaskUseCase {
 				},
 				{
 					condition:
-						!["ADMIN", "MANAGER"].includes(requester.role) && task?.staffId !== requester.id,
+						!["ADMIN", "MANAGER"].includes(requester.role) && task?.assignedToId !== requester.id,
 					toThrow: new ForbiddenError(
 						"Ação não permitida: apenas colaboradores com perfil ADMIN ou MANAGER ou o colaborador responsável pela tarefa podem acessá-las.",
 					),
@@ -48,7 +48,7 @@ export class GetTaskUseCase {
 						"Ação não permitida: gerentes só tem acesso às tarefas do próprio departamento.",
 					),
 				},
-			]);
+			]).validate();
 		}
 
 		return {

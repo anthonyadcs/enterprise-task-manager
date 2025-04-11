@@ -3,8 +3,66 @@ import { GetEmployeeTasksDTO } from "../dtos/GetEmployeTasksDTO";
 import { GetTasksResponse, ITaskRepository } from "../taskRepositoryInterface";
 import { GetCompanyTasksDTO } from "../dtos/GetCompanyTasksDTO";
 import { Task } from "@prisma/client";
+import { CreateTaskDTO } from "../dtos/createTaskDTO";
+import { GetTasksInTimeRangeDTO } from "../dtos/getTasksInTimeRangeDTO";
 
 class TaskRepository implements ITaskRepository {
+	async create({
+		title,
+		description,
+		priority,
+		status,
+		department,
+		startDate,
+		endDate,
+		assignedById,
+		assignedToId,
+		companyId,
+	}: CreateTaskDTO): Promise<void> {
+		try {
+			await prismaClient.task.create({
+				data: {
+					title,
+					description,
+					priority,
+					status,
+					startDate,
+					endDate,
+					department,
+					assignedById,
+					assignedToId,
+					companyId,
+				},
+			});
+		} catch (error) {
+			console.log(error);
+			throw new Error();
+		}
+	}
+
+	async getTasksInTimeRange({
+		employeeId,
+		startRange,
+		endRange,
+	}: GetTasksInTimeRangeDTO): Promise<number> {
+		try {
+			return await prismaClient.task.count({
+				where: {
+					assignedToId: employeeId,
+					OR: [
+						{
+							startDate: { lte: startRange },
+							endDate: { gte: endRange },
+						},
+					],
+				},
+			});
+		} catch (error) {
+			console.log(error);
+			throw new Error();
+		}
+	}
+
 	async getById(id: string): Promise<Task | undefined> {
 		try {
 			const task =
@@ -26,7 +84,7 @@ class TaskRepository implements ITaskRepository {
 		try {
 			const [tasks, tasksPerPage, totalTasks] = [
 				(await prismaClient.task.findMany({
-					where: { staffId: employeeId, AND: filters },
+					where: { assignedToId: employeeId, AND: filters },
 					skip: page.skip,
 					take: page.limit,
 					orderBy: {
@@ -35,13 +93,13 @@ class TaskRepository implements ITaskRepository {
 				})) || undefined,
 
 				await prismaClient.task.count({
-					where: { staffId: employeeId, AND: filters },
+					where: { assignedToId: employeeId, AND: filters },
 					skip: page.skip,
 					take: page.limit,
 				}),
 
 				await prismaClient.task.count({
-					where: { staffId: employeeId, AND: filters },
+					where: { assignedToId: employeeId, AND: filters },
 				}),
 			];
 

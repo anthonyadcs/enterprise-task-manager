@@ -58,10 +58,10 @@ model Employee {
   company Company @relation(fields: [companyId], references: [id])
 
   //Relação de tarefas a serem feitas/finalizadas por este EMPLOYEE (em caso de seu ROLE ser STAFF)
-  tasks Task[] @relation("staffRelation")
+  tasks Task[] @relation("assignedToRelation")
 
   //Relação de tarefas ordenadas por este EMPLOYEE (em caso de seu ROLE ser MANAGER)
-  orderedTasks Task[] @relation("managerRelation")
+  orderedTasks Task[] @relation("assignedByRelation")
 
   @@map("employees")
 }
@@ -88,6 +88,7 @@ model Company {
 model Task {
   id String @id @default(uuid())
   title String
+  description String?
   priority TaskPriority
   department CompanyDepartment
   startDate DateTime
@@ -98,14 +99,16 @@ model Task {
   companyId String
   company Company @relation(fields: [companyId], references: [id])
 
-  //Referência ao STAFF vinculado a tarefa
-  staffId String
-  staff Employee @relation("staffRelation", fields: [staffId], references: [id]) 
+  //Referência ao colaborador vinculado a execução tarefa
+  assignedToId String
+  assignedTo Employee @relation("assignedToRelation", fields: [assignedToId], references: [id]) 
 
-  //Referência ao MANAGER vinculado a tarefa
-  managerId String
-  manager Employee @relation("managerRelation", fields: [managerId], references: [id])
+  //Referência ao colaborador que ordenou da tarefa
+  assignedById String
+  assignedBy Employee @relation("assignedByRelation", fields: [assignedById], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@map("task")
 }

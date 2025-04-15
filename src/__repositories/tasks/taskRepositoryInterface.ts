@@ -3,13 +3,13 @@ import { GetEmployeeTasksDTO } from "./dtos/GetEmployeTasksDTO";
 import { GetCompanyTasksDTO } from "./dtos/GetCompanyTasksDTO";
 import { CreateTaskDTO } from "./dtos/createTaskDTO";
 import { GetTasksInTimeRangeDTO } from "./dtos/getTasksInTimeRangeDTO";
+import { UpdateTaskDTO } from "./dtos/updateTaskDTO";
 
 export interface ITaskRepository {
 	create({
 		title,
 		description,
 		priority,
-		status,
 		department,
 		startDate,
 		endDate,
@@ -17,6 +17,18 @@ export interface ITaskRepository {
 		assignedToId,
 		companyId,
 	}: CreateTaskDTO): Promise<void>;
+
+	update({
+		id,
+		title,
+		description,
+		priority,
+		status,
+		startDate,
+		endDate,
+		department,
+		assignedToId,
+	}: UpdateTaskDTO): Promise<void>;
 
 	getTasksInTimeRange({
 		employeeId,

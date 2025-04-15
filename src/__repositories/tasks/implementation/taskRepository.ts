@@ -5,13 +5,13 @@ import { GetCompanyTasksDTO } from "../dtos/GetCompanyTasksDTO";
 import { Task } from "@prisma/client";
 import { CreateTaskDTO } from "../dtos/createTaskDTO";
 import { GetTasksInTimeRangeDTO } from "../dtos/getTasksInTimeRangeDTO";
+import { UpdateTaskDTO } from "../dtos/updateTaskDTO";
 
 class TaskRepository implements ITaskRepository {
 	async create({
 		title,
 		description,
 		priority,
-		status,
 		department,
 		startDate,
 		endDate,
@@ -25,7 +25,6 @@ class TaskRepository implements ITaskRepository {
 					title,
 					description,
 					priority,
-					status,
 					startDate,
 					endDate,
 					department,
@@ -55,6 +54,37 @@ class TaskRepository implements ITaskRepository {
 							endDate: { gte: endRange },
 						},
 					],
+				},
+			});
+		} catch (error) {
+			console.log(error);
+			throw new Error();
+		}
+	}
+
+	async update({
+		id,
+		title,
+		description,
+		priority,
+		status,
+		startDate,
+		endDate,
+		department,
+		assignedToId,
+	}: UpdateTaskDTO): Promise<void> {
+		try {
+			await prismaClient.task.update({
+				where: { id },
+				data: {
+					title,
+					description,
+					priority,
+					status,
+					startDate,
+					endDate,
+					department,
+					assignedToId,
 				},
 			});
 		} catch (error) {
